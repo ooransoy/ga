@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
-	"strconv"
 	"time"
 )
 
@@ -164,16 +163,23 @@ func main() {
 	genotypeLen := 5
 	mutationRate := 80
 	k := 500
+	evolveCount := 500
 	fitnessFunction := func(s string) float64 {
-		n, _ := strconv.Atoi(s)
-		return float64(n)
+		return float64(
+			(s[0] - '0') + (s[1] - '0') +
+			(s[2] - '0') + (s[3] - '0') +
+			(s[4] - '0'),
+		)
 	}
 
 	pop := RandomPopulation(cset, genotypeLen, popSize)
-	for i := 0; i < 500; i++ {
+	for i := 0; i < evolveCount; i++ {
 		pop, _ = EvolvePopulation(pop, fitnessFunction, k, cset, float64(mutationRate))
 	}
-	fmt.Println("Fittest:", SelectFromSubset(pop, fitnessFunction))
+	fmt.Println(
+		"Fitness of best genotype in population after evolving",
+		evolveCount, "times:" , SelectFromSubset(pop, fitnessFunction),
+	)
 }
 
 func sampleByte(s string) byte {
