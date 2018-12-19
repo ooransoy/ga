@@ -1,4 +1,4 @@
-package main
+package gocanvas
 
 import (
 	"html/template"
@@ -10,7 +10,7 @@ import (
 )
 
 func serve() {
-	resetCanvas()
+	ResetCanvas()
 	router := mux.NewRouter()
 	router.HandleFunc("/", handler).Methods("GET")
 	router.HandleFunc("/img", imgHandler).Methods("GET")
@@ -34,7 +34,7 @@ func handler(writer http.ResponseWriter, _ *http.Request) {
 
 func imgHandler(writer http.ResponseWriter, _ *http.Request) {
 	writer.Header().Set("Content-Type", "image/png")
-	err := png.Encode(writer, canvas)
+	err := png.Encode(writer, Canvas)
 	if err != nil {
 		if err.Error()[:9] == "write tcp" {
 			log.Println(err)

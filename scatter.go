@@ -1,4 +1,4 @@
-package main
+package gocanvas
 
 import (
 	"image/color"
@@ -8,28 +8,36 @@ import (
 type ConnectMode uint8
 
 const (
-	None ConnectMode = iota
-	Open
-	Closed
+	NoConnect ConnectMode = iota
+	OpenConnect
+	ClosedConnect
 )
 
-func scatterPlot(d [][2]float64, c color.Color, scale [2]float64) {
-	for i, p := range d {
-		drawCircle(
-			width/2+ftoi(p[0]*scale[0]),
-			height/2+ftoi(p[1]*scale[1]),
-			3, c, true,
-		)
-		drawLine(
-			width/2+ftoi(p[0]*scale[0]),
-			height/2+ftoi(p[1]*scale[1]),
-			width/2+ftoi(d[(i+1)%len(d)][0]*scale[0]),
-			height/2+ftoi(d[(i+1)%len(d)][1]*scale[1]),
-			c,
-		)
+func ScatterPlot(d [][2]float64, c color.Color, scale [2]float64, connect ConnectMode) {
+	m := func(p [2]float64, axis int) int { // Manipulate
+		return []int{Width, Height}[axis]/2 + ftoi(p[axis]*scale[axis])
+	}
+
+	var prev = d[len(d)-1]
+	if connect == OpenConnect {
+		prev = d[0]
+	}
+
+	for _, p := range d {
+		if connect != NoConnect {
+			DrawLine(
+				m(p, 0),
+				m(p, 1),
+				m(prev, 0),
+				m(prev, 1),
+				c,
+			)
+			prev = p
+		}
+		DrawCircle(m(p, 0), m(p, 1), 3, c, true)
 	}
 }
 
 func ftoi(f float64) int {
-	return int(math.Floor(f))
+	return int(math.Trunc(f))
 }
