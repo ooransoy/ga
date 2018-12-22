@@ -9,18 +9,35 @@ import (
 func DrawLine(x1, y1, x2, y2 int, c color.Color) {
 	dx := x2 - x1
 	dy := y2 - y1
-	for i := float64(0); ftoi(i) != dx; {
-		Canvas.Set(
-			x1+ftoi(i),
-			y1+ftoi(float64(dy)/float64(dx)*i),
-			c,
-		)
 
-		if dx < 0 {
-			i -= 0.1
-			continue
+	if int(math.Abs(float64(dx))) >= int(math.Abs(float64(dy))) {
+		for i := float64(0); ftoi(i) != dx; {
+			Canvas.Set(
+				x1+ftoi(i),
+				y1+ftoi(float64(dy)/float64(dx)*i),
+				c,
+			)
+
+			if dx < 0 {
+				i -= 0.01
+				continue
+			}
+			i += 0.01
 		}
-		i += 0.1
+	} else {
+		for i := float64(0); ftoi(i) != dy; {
+			Canvas.Set(
+				x1+ftoi(float64(dx)/float64(dy)*i),
+				y1+ftoi(i),
+				c,
+			)
+
+			if dy < 0 {
+				i -= 0.01
+				continue
+			}
+			i += 0.01
+		}
 	}
 }
 
